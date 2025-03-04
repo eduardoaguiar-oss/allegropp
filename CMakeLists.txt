@@ -24,15 +24,22 @@ endif()
 
 # Add source files
 set(SOURCES
+    color.cpp
+    display.cpp
     font.cpp
     sample.cpp
 #    image.cpp
-#    display.cpp
 #    keyboard.cpp
 )
 
-# Add executable or library
-add_library(allegropp ${SOURCES})
+# Add a dynamic library target
+add_library(allegropp SHARED ${SOURCES})
+
+# Set the library version (optional)
+set_target_properties(allegropp PROPERTIES
+    VERSION ${PROJECT_VERSION}
+    SOVERSION 1
+)
 
 # Link Allegro libraries
 if (PKG_CONFIG_FOUND)
@@ -41,13 +48,14 @@ else()
     target_link_libraries(allegropp allegro::allegro allegro::allegro_image allegro::allegro_font allegro::allegro_ttf allegro::allegro_audio allegro::allegro_acodec)
 endif()
 
-# Install the library (optional)
+# Install the library and headers
 install(TARGETS allegropp
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
+    PUBLIC_HEADER DESTINATION include/allegropp
 )
-install(DIRECTORY include/ DESTINATION include)
+install(DIRECTORY include/ DESTINATION include/allegropp)
 
 # Add an example executable (optional)
 if (BUILD_EXAMPLES)

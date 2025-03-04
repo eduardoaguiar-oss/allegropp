@@ -1,5 +1,5 @@
-#ifndef ALLEGROPP_FONT
-#define ALLEGROPP_FONT
+#ifndef ALLEGROPP_COLOR
+#define ALLEGROPP_COLOR
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // @author      Eduardo Aguiar <aguiar@protonmail.ch>
@@ -20,45 +20,48 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Allegro++. If not, see <https://www.gnu.org/licenses/>.
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#include "color.hpp"
-#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_color.h>
 #include <memory>
 #include <string>
+#include <tuple>
 
 namespace allegropp
 {
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Allegro font class
+//! \brief Allegro color class
 //! \author Eduardo Aguiar
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-class font
+class color
 {
 public:
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  // Datatypes
+  // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  using component_type = unsigned char;
+
+  // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // Constructors
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  font ();
-  font (const std::string&, std::size_t);
-  font (font&&) noexcept = default;
-  font (const font&) noexcept = default;
+  color ();
+  color (component_type, component_type, component_type);
+  color (component_type, component_type, component_type, component_type);
+  color (color&&) noexcept = default;
+  color (const color&) noexcept = default;
 
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // Operators
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  font& operator= (const font&) noexcept = default;
-  font& operator= (font&&) noexcept = default;
-  operator bool() const noexcept;
+  color& operator= (const color&) noexcept = default;
+  color& operator= (color&&) noexcept = default;
 
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // Function prototypes
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  int get_font_line_height () const;
-  int get_font_ascent () const;
-  int get_font_descent () const;
-  int get_text_width (const std::string&) const;
-  void draw_text_left (int, int, const std::string&, const color&);
-  void draw_text_center (int, int, const std::string&, const color&);
-  void draw_text_right (int, int, const std::string&, const color&);
+  std::tuple <component_type, component_type, component_type> get_rgb () const;
+  std::tuple <component_type, component_type, component_type, component_type> get_rgba () const;
+  std::string get_name () const;
+  std::string get_html () const;
+  ALLEGRO_COLOR get_implementation () const;
 
 private:
   //! \brief Implementation class forward declaration
@@ -67,6 +70,18 @@ private:
   //! \brief Implementation pointer
   std::shared_ptr <impl> impl_;
 };
+
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// Functions
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+color new_color_by_name (const std::string&);
+color new_color_by_html (const std::string&);
+color new_color_by_cmyk (float, float, float, float);
+color new_color_by_hsl (float, float, float);
+color new_color_by_hsv (float, float, float);
+color new_color_by_yuv (float, float, float);
+color new_color_by_rgb (float, float, float);
+color new_color_by_rgba (float, float, float, float);
 
 } // namespace allegropp
 

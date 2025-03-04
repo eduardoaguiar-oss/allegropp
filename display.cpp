@@ -17,35 +17,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Allegro++. If not, see <https://www.gnu.org/licenses/>.
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#include "font.hpp"
+#include "display.hpp"
 #include <allegro5/allegro.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
-#include <mutex>
-
-namespace
-{
-std::once_flag is_initialized_;
-
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Initialize Allegro font subsystem
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-static void
-_init ()
-{
-    al_init_font_addon ();
-    al_init_ttf_addon ();
-}
-
-} // namespace
-
 
 namespace allegropp
 {
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief <i>font</i> implementation class
+//! \brief <i>display</i> implementation class
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-class font::impl
+class display::impl
 {
 public:
 
@@ -53,9 +33,9 @@ public:
   // Constructors and destructor
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   impl () = default;
+  impl (std::size_t, std::size_t);
   impl (const impl&) = delete;
   impl (impl&&) = delete;
-  impl (const std::string&, std::size_t);
   ~impl ();
 
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -73,124 +53,159 @@ public:
   }
 
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  //! \brief Get implementation pointer
+  // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  ALLEGRO_DISPLAY *
+  get_implementation () const
+  {
+      return obj_;
+  }
+
+  // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // Prototypes
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  int get_font_line_height () const;
-  int get_font_ascent () const;
-  int get_font_descent () const;
-  int get_text_width (const std::string&) const;
-  void draw_text (const std::string&, const color&, int, int, int);
+  int get_width () const;
+  int get_height () const;
+  void flip ();
+  void resize (std::size_t, std::size_t);
+  void set_window_title (const std::string&);
+  std::pair <int, int> get_window_position () const;
+  void set_window_position (std::size_t, std::size_t);
 
 private:
-  //! \brief Allegro font object
-  ALLEGRO_FONT *obj_ = nullptr;
+  //! \brief Allegro display object
+  ALLEGRO_DISPLAY *obj_ = nullptr;
 };
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //! \brief Constructor
-//! \param path Font path
-//! \param size Font size
+//! \param width Display width in pixels
+//! \param height Display height in pixels
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-font::impl::impl (const std::string& path, std::size_t size)
+display::impl::impl (std::size_t width, std::size_t height)
 {
-    std::call_once (is_initialized_, _init);
-    obj_ = al_load_ttf_font(path.c_str (), size, 0);
+    obj_ = al_create_display (width, height);
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //! \brief Destructor
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-font::impl::~impl ()
+display::impl::~impl ()
 {
     if (obj_)
-        al_destroy_font (obj_);
+        al_destroy_display (obj_);
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Get font line height
-//! \return Height in pixels
+//! \brief Get display width
+//! \return Display width in pixels
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 int
-font::impl::get_font_line_height () const
+display::impl::get_width () const
 {
     if (!obj_)
-        throw std::invalid_argument ("null font object");
-    
-    return al_get_font_line_height (obj_);
+        throw std::invalid_argument ("null display object");
+        
+    return al_get_display_width (obj_);
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Get font ascent
-//! \return Font ascent in pixels
+//! \brief Get display height
+//! \return Display height in pixels
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 int
-font::impl::get_font_ascent () const
+display::impl::get_height () const
 {
     if (!obj_)
-        throw std::invalid_argument ("null font object");
-    
-    return al_get_font_ascent (obj_);
+        throw std::invalid_argument ("null display object");
+
+    return al_get_display_height (obj_);
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Get font descent
-//! \return Font descent in pixels
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-int
-font::impl::get_font_descent () const
-{
-    if (!obj_)
-        throw std::invalid_argument ("null font object");
-    
-    return al_get_font_descent (obj_);
-}
-
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Get text width
-//! \param text Text
-//! \return Text width in pixels
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-int
-font::impl::get_text_width (const std::string& text) const
-{
-    if (!obj_)
-        throw std::invalid_argument ("null font object");
-    
-    return al_get_text_width (obj_, text.c_str ());
-}
-
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Draw text at position
-//! \param text Text
-//! \param c Color object
-//! \param x X pos
-//! \param y Y pos
-//! \param align Text alignment (LEFT, CENTER, RIGHT)
+//! \brief Flip display
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 void
-font::impl::draw_text (const std::string& text, const color& c, int x, int y, int align)
+display::impl::flip ()
+{
+    if (!obj_)
+        throw std::invalid_argument ("null display object");
+    
+    al_flip_display ();
+}
+
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//! \brief Resize display
+//! \param width Display width in pixels
+//! \param height Display height in pixels
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+void
+display::impl::resize (std::size_t width, std::size_t height)
+{
+    if (!obj_)
+        throw std::invalid_argument ("null display object");
+
+    al_resize_display (obj_, width, height);
+}
+
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//! \brief Set window title
+//! \param title Window title
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+void
+display::impl::set_window_title (const std::string& title)
+{
+    if (!obj_)
+        throw std::invalid_argument ("null display object");
+
+    al_set_window_title (obj_, title.c_str ());
+}
+
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//! \brief Get window position
+//! \return width,height as pair
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+std::pair <int, int>
+display::impl::get_window_position () const
 {
   if (!obj_)
-    throw std::invalid_argument ("null font object");
+    throw std::invalid_argument ("null display object");
 
-  al_draw_text(obj_, c.get_implementation (), x, y, align, text.c_str());
+  int x, y;
+  al_get_window_position (obj_, &x, &y);
+
+  return std::make_pair (x, y);
+}
+
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//! \brief Set window position
+//! \param x Horizontal position in pixels
+//! \param y Vertical position in pixels
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+void
+display::impl::set_window_position (std::size_t x, std::size_t y)
+{
+    if (!obj_)
+        throw std::invalid_argument ("null display object");
+
+    al_set_window_position (obj_, x, y);
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //! \brief Constructor
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-font::font ()
+display::display ()
   : impl_ (std::make_shared <impl> ())
 {
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //! \brief Constructor
-//! \param path Font path
-//! \param size Font size
+//! \param width Display width in pixels
+//! \param height Display height in pixels
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-font::font (const std::string& path, std::size_t size)
-  : impl_ (std::make_shared <impl> (path, size))
+display::display (std::size_t width, std::size_t height)
+  : impl_ (std::make_shared <impl> (width, height))
 {
 }
 
@@ -198,89 +213,90 @@ font::font (const std::string& path, std::size_t size)
 //! \brief Operator bool
 //! \return true/false
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-font::operator bool () const noexcept
+display::operator bool () const noexcept
 {
   return impl_->operator bool ();
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Get font line height
-//! \return Height in pixels
+//! \brief Get display width
+//! \return Display width in pixels
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 int
-font::get_font_line_height () const
+display::get_width () const
 {
-    return impl_->get_font_line_height ();
+  return impl_->get_width ();
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Get font ascent
-//! \return Font ascent in pixels
+//! \brief Get display height
+//! \return Display height in pixels
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 int
-font::get_font_ascent () const
+display::get_height () const
 {
-    return impl_->get_font_ascent ();
+  return impl_->get_height ();
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Get font descent
-//! \return Font descent in pixels
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-int
-font::get_font_descent () const
-{
-    return impl_->get_font_descent ();
-}
-
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Get text width
-//! \param text Text
-//! \return Text width in pixels
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-int
-font::get_text_width (const std::string& text) const
-{
-    return impl_->get_text_width (text.c_str ());
-}
-
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Draw text at left position
-//! \param x X pos
-//! \param y Y pos
-//! \param text Text
-//! \param c Color object
+//! \brief Flip display
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 void
-font::draw_text_left (int x, int y, const std::string& text, const color& c)
+display::flip ()
 {
-    impl_->draw_text (text, c, x, y, ALLEGRO_ALIGN_LEFT);
+  impl_->flip ();
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Draw text at center position
-//! \param x X pos
-//! \param y Y pos
-//! \param text Text
-//! \param c Color object
+//! \brief Resize display
+//! \param width Display width in pixels
+//! \param height Display height in pixels
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 void
-font::draw_text_center (int x, int y, const std::string& text, const color& c)
+display::resize (std::size_t width, std::size_t height)
 {
-    impl_->draw_text (text, c, x, y, ALLEGRO_ALIGN_CENTER);
+  impl_->resize (width, height);
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Draw text at left position
-//! \param x X pos
-//! \param y Y pos
-//! \param text Text
-//! \param c Color object
+//! \brief Set window title
+//! \param title Window title
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 void
-font::draw_text_right (int x, int y, const std::string& text, const color& c)
+display::set_window_title (const std::string& title)
 {
-    impl_->draw_text (text, c, x, y, ALLEGRO_ALIGN_RIGHT);
+  impl_->set_window_title (title);
+}
+
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//! \brief Get window position
+//! \return width,height as pair
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+std::pair <int, int>
+display::get_window_position () const
+{
+  return impl_->get_window_position ();
+}
+
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//! \brief Set window position
+//! \param x Horizontal position in pixels
+//! \param y Vertical position in pixels
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+void
+display::set_window_position (std::size_t x, std::size_t y)
+{
+  impl_->set_window_position (x, y);
+}
+
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//! \brief Get implementation pointer
+//! \return Allegro display handler
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ALLEGRO_DISPLAY *
+display::get_implementation () const
+{
+   return impl_->get_implementation ();
 }
 
 } // namespace allegropp

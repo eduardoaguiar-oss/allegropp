@@ -1,3 +1,22 @@
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// @author      Eduardo Aguiar <aguiar@protonmail.ch>
+// @copyright   Copyright (c) 2025 Eduardo Aguiar
+//
+// This file is part of Allegro++.
+// 
+// Allegro++ is free software: you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with Allegro++. If not, see <https://www.gnu.org/licenses/>.
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #include "sample.hpp"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_audio.h> // Include the audio addon
@@ -56,7 +75,7 @@ public:
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // Prototypes
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  void play (double, double, double, int);
+  void play (double, double, double, ALLEGRO_PLAYMODE);
 
 private:
   //! \brief Allegro sample object
@@ -87,11 +106,15 @@ sample::impl::~impl ()
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //! \brief Play audio sample
+//! \param gain Relative volume at which the sample is played; 1.0 is normal
+//! \param pan 0.0 is centred, -1.0 is left, 1.0 is right
+//! \param speed Relative speed at which the sample is played; 1.0 is normal.
+//! \param mode ALLEGRO_PLAYMODE_ONCE, ALLEGRO_PLAYMODE_LOOP, or ALLEGRO_PLAYMODE_BIDIR
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 void
-sample::impl::play (double a, double b, double c, int flags)
+sample::impl::play (double gain, double pan, double speed, ALLEGRO_PLAYMODE mode)
 {
-  if (!al_play_sample (obj_, a, b, c, ALLEGRO_PLAYMODE_LOOP, &id_))
+  if (!al_play_sample (obj_, gain, pan, speed, mode, &id_))
     throw std::runtime_error ("failed to play audio sample");
 }
 
@@ -122,12 +145,39 @@ sample::operator bool () const noexcept
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Play audio sample
+//! \brief Play audio sample once
+//! \param gain Relative volume at which the sample is played; 1.0 is normal
+//! \param pan 0.0 is centred, -1.0 is left, 1.0 is right
+//! \param speed Relative speed at which the sample is played; 1.0 is normal.
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 void
-sample::play (double a, double b, double c, int flags)
+sample::play_once (double gain, double pan, double speed)
 {
-  impl_->play (a, b, c, flags);
+  impl_->play (gain, pan, speed, ALLEGRO_PLAYMODE_ONCE);
+}
+
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//! \brief Play audio sample in loop mode
+//! \param gain Relative volume at which the sample is played; 1.0 is normal
+//! \param pan 0.0 is centred, -1.0 is left, 1.0 is right
+//! \param speed Relative speed at which the sample is played; 1.0 is normal.
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+void
+sample::play_loop (double gain, double pan, double speed)
+{
+  impl_->play (gain, pan, speed, ALLEGRO_PLAYMODE_LOOP);
+}
+
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//! \brief Play audio sample bidir mode
+//! \param gain Relative volume at which the sample is played; 1.0 is normal
+//! \param pan 0.0 is centred, -1.0 is left, 1.0 is right
+//! \param speed Relative speed at which the sample is played; 1.0 is normal.
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+void
+sample::play_bidir (double gain, double pan, double speed)
+{
+  impl_->play (gain, pan, speed, ALLEGRO_PLAYMODE_BIDIR);
 }
 
 } // namespace allegropp

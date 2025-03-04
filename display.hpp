@@ -1,5 +1,5 @@
-#ifndef ALLEGROPP_FONT
-#define ALLEGROPP_FONT
+#ifndef ALLEGROPP_DISPLAY
+#define ALLEGROPP_DISPLAY
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // @author      Eduardo Aguiar <aguiar@protonmail.ch>
@@ -20,45 +20,46 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Allegro++. If not, see <https://www.gnu.org/licenses/>.
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#include "color.hpp"
-#include <allegro5/allegro_font.h>
+#include <allegro5/allegro.h>
 #include <memory>
 #include <string>
+#include <utility>
 
 namespace allegropp
 {
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Allegro font class
+//! \brief Allegro display class
 //! \author Eduardo Aguiar
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-class font
+class display
 {
 public:
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // Constructors
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  font ();
-  font (const std::string&, std::size_t);
-  font (font&&) noexcept = default;
-  font (const font&) noexcept = default;
+  display ();
+  display (std::size_t, std::size_t);
+  display (display&&) noexcept = default;
+  display (const display&) noexcept = default;
 
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // Operators
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  font& operator= (const font&) noexcept = default;
-  font& operator= (font&&) noexcept = default;
+  display& operator= (const display&) noexcept = default;
+  display& operator= (display&&) noexcept = default;
   operator bool() const noexcept;
 
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // Function prototypes
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  int get_font_line_height () const;
-  int get_font_ascent () const;
-  int get_font_descent () const;
-  int get_text_width (const std::string&) const;
-  void draw_text_left (int, int, const std::string&, const color&);
-  void draw_text_center (int, int, const std::string&, const color&);
-  void draw_text_right (int, int, const std::string&, const color&);
+  int get_width () const;
+  int get_height () const;
+  void flip ();
+  void resize (std::size_t, std::size_t);
+  void set_window_title (const std::string&);
+  std::pair <int, int> get_window_position () const;
+  void set_window_position (std::size_t, std::size_t);
+  ALLEGRO_DISPLAY *get_implementation () const;
 
 private:
   //! \brief Implementation class forward declaration

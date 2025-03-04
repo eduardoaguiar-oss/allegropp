@@ -1,7 +1,7 @@
 ---
 name: Allegro++
 description: A modern C++ wrapper for the Allegro game library.
-license: LGPL-3.0
+license: LGPL-2.1
 author: Eduardo Aguiar
 email: aguiar@protonmail.ch
 repository: https://github.com/eduardoaguiar-oss/allegropp
@@ -35,12 +35,14 @@ website: https://github.com/eduardoaguiar-oss/allegropp
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/eduardoaguiar-oss/allegropp.git
    cd allegropp
    ```
 
 2. Build the project:
+
    ```bash
    mkdir build
    cd build
@@ -49,6 +51,7 @@ website: https://github.com/eduardoaguiar-oss/allegropp
    ```
 
 3. Install the library (optional):
+
    ```bash
    sudo cmake --install .
    ```
@@ -68,19 +71,23 @@ int main() {
     }
 
     // Create a display
-    allegropp::Display display(800, 600);
-    display.setTitle("Allegro++ Example");
+    allegropp::display display (800, 600);
+    display.set_window_title ("Allegro++ Example");
 
+    // Load font
+    allegropp::font text_font ("arial.ttf");
+    allegropp::color text_color (255, 255, 0);
+    
     // Main loop
     while (true) {
         // Clear the screen
-        display.clear(allegropp::Color::White);
+        display.clear (allegropp::Color::White);
 
         // Draw something
-        display.drawText("Hello, Allegro++!", 100, 100, allegropp::Color::Black);
+        font.draw_text (100, 100, "Hello, Allegro++!", text_color);
 
         // Flip the display
-        display.flip();
+        display.flip ();
     }
 
     return 0;
@@ -92,9 +99,23 @@ int main() {
 ## Documentation
 
 For detailed documentation, check out the [Wiki](https://github.com/eduardoaguiar-oss/allegropp/wiki). It includes:
+
 - **API Reference**: A complete guide to Allegro++ classes and methods.
 - **Tutorials**: Step-by-step guides to help you get started.
 - **Examples**: Sample projects demonstrating Allegro++ features.
+
+---
+
+## Support the Project
+
+If you find Allegro++ useful, consider donating cryptocurrency. Your contributions help maintain and improve the project.
+
+### Donation Addresses
+- **Bitcoin (BTC)**: `bc1qa92rvaru86hr5lup2a6ewqqgnran3p2qf3djah`
+- **Litecoin (LTC)**: `LhiBHWgrqysZsoZfiuc3tUyzFRWwmDZipo`
+- **Monero (XMR)**: `42DmNUJ3yQ7bByCgkcyx8nVScC7HrJd83DxUYWPqNo7oQaq8Tnu3BqAQ57J7tRGFkW7wYjzukphLLA5gJXaF9paGJ5X17LD`
+
+Thank you for your support! Every contribution makes a difference.
 
 ---
 
@@ -128,12 +149,6 @@ Allegro++ is released under the **GNU Lesser General Public License (LGPL)**. Se
 For questions, suggestions, or support, feel free to open an issue on GitHub or contact the maintainer:
 
 - **Eduardo Aguiar**: [aguiar@protonmail.ch](mailto:aguiar@protonmail.ch)
-
----
-
-## Support the Project
-
-If you find Allegro++ useful, consider giving it a ⭐️ on GitHub or contributing to its development. Your support is greatly appreciated!
 
 ---
 
