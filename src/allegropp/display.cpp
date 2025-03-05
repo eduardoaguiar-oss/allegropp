@@ -53,15 +53,6 @@ public:
   }
 
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  //! \brief Get implementation pointer
-  // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  ALLEGRO_DISPLAY *
-  get_implementation () const
-  {
-      return obj_;
-  }
-
-  // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // Prototypes
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   int get_width () const;
@@ -71,6 +62,7 @@ public:
   void set_window_title (const std::string&);
   std::pair <int, int> get_window_position () const;
   void set_window_position (std::size_t, std::size_t);
+  event_source get_event_source () const;
 
 private:
   //! \brief Allegro display object
@@ -192,6 +184,19 @@ display::impl::set_window_position (std::size_t x, std::size_t y)
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//! \brief Get display event source
+//! \return Allegro display event source
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+event_source
+display::impl::get_event_source () const
+{
+  if (!obj_)
+    throw std::invalid_argument ("null display object");
+
+   return event_source (al_get_display_event_source (obj_));
+}
+
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //! \brief Constructor
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 display::display ()
@@ -290,13 +295,13 @@ display::set_window_position (std::size_t x, std::size_t y)
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Get implementation pointer
-//! \return Allegro display handler
+//! \brief Get display event source
+//! \return Allegro display event source
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-ALLEGRO_DISPLAY *
-display::get_implementation () const
+event_source
+display::get_event_source () const
 {
-   return impl_->get_implementation ();
+   return impl_->get_event_source ();
 }
 
 } // namespace allegropp

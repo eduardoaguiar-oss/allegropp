@@ -24,10 +24,12 @@ endif()
 
 # Add source files
 set(SOURCES
-    color.cpp
-    display.cpp
-    font.cpp
-    sample.cpp
+    src/allegropp/bitmap.cpp
+    src/allegropp/color.cpp
+    src/allegropp/display.cpp
+    src/allegropp/event_source.cpp
+    src/allegropp/font.cpp
+    src/allegropp/sample.cpp
 #    image.cpp
 #    keyboard.cpp
 )
@@ -40,6 +42,8 @@ set_target_properties(allegropp PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 1
 )
+
+target_include_directories(allegropp PUBLIC "./src")
 
 # Link Allegro libraries
 if (PKG_CONFIG_FOUND)
@@ -63,3 +67,6 @@ if (BUILD_EXAMPLES)
     target_link_libraries(example allegropp)
     install(TARGETS example DESTINATION bin)
 endif()
+
+
+

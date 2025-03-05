@@ -1,6 +1,3 @@
-#ifndef ALLEGROPP_DISPLAY
-#define ALLEGROPP_DISPLAY
-
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // @author      Eduardo Aguiar <aguiar@protonmail.ch>
 // @copyright   Copyright (c) 2025 Eduardo Aguiar
@@ -20,55 +17,70 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Allegro++. If not, see <https://www.gnu.org/licenses/>.
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#include <allegro5/allegro.h>
-#include <memory>
-#include <string>
-#include <utility>
+#include "event_source.hpp"
 
 namespace allegropp
 {
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//! \brief Allegro display class
-//! \author Eduardo Aguiar
+//! \brief <i>event_source</i> implementation class
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-class display
+class event_source::impl
 {
 public:
+
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  // Constructors
+  // Constructors and destructor
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  display ();
-  display (std::size_t, std::size_t);
-  display (display&&) noexcept = default;
-  display (const display&) noexcept = default;
+  explicit impl (ALLEGRO_EVENT_SOURCE *);
+  impl (const impl&) = delete;
+  impl (impl&&) = delete;
 
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // Operators
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  display& operator= (const display&) noexcept = default;
-  display& operator= (display&&) noexcept = default;
-  operator bool() const noexcept;
+  impl& operator= (const impl&) = delete;
+  impl& operator= (impl&&) = delete;
 
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  // Function prototypes
+  //! \brief Get implementation pointer
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  int get_width () const;
-  int get_height () const;
-  void flip ();
-  void resize (std::size_t, std::size_t);
-  void set_window_title (const std::string&);
-  std::pair <int, int> get_window_position () const;
-  void set_window_position (std::size_t, std::size_t);
-  ALLEGRO_DISPLAY *get_implementation () const;
+  ALLEGRO_EVENT_SOURCE *
+  get_implementation () const
+  {
+      return obj_;
+  }
 
 private:
-  //! \brief Implementation class forward declaration
-  class impl;
-
-  //! \brief Implementation pointer
-  std::shared_ptr <impl> impl_;
+  //! \brief Allegro event_source object
+  ALLEGRO_EVENT_SOURCE *obj_ = nullptr;
 };
 
-} // namespace allegropp
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//! \brief Constructor
+//! \param p Event source pointer
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+event_source::impl::impl (ALLEGRO_EVENT_SOURCE *p)
+  : obj_ (p)
+{
+}
 
-#endif
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//! \brief Constructor
+//! \param p Event source pointer
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+event_source::event_source (ALLEGRO_EVENT_SOURCE *p)
+  : impl_ (std::make_shared <impl> (p))
+{
+}
+
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//! \brief Get implementation pointer
+//! \return Allegro display handler
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ALLEGRO_EVENT_SOURCE *
+event_source::get_implementation () const
+{
+   return impl_->get_implementation ();
+}
+
+} // namespace allegropp
