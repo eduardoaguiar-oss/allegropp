@@ -50,6 +50,7 @@ set(SOURCES
     src/allegropp/bitmap.cpp
     src/allegropp/color.cpp
     src/allegropp/display.cpp
+    src/allegropp/event_queue.cpp
     src/allegropp/event_source.cpp
     src/allegropp/font.cpp
     src/allegropp/keyboard.cpp
