@@ -70,10 +70,6 @@ main ()
       return EXIT_FAILURE;
     }
 
-  // Draw the message
-  draw (font);
-  display.flip ();
-
   // Main game loop
   allegropp::event_queue event_queue;
 
