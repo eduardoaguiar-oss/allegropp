@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Added this CHANGELOG.md file.
 - Added a new function allegropp::init.
 - Added a new directory named examples, containing usage examples for Allegro++.
+- Added a new example program, called "hello_world".
 
 ### Changed
 - bitmap::_init calls allegropp::init.
