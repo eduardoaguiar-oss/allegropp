@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Allegro++. If not, see <https://www.gnu.org/licenses/>.
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#include "color.hpp"
+#include <allegropp/color.hpp>
 
 namespace allegropp
 {

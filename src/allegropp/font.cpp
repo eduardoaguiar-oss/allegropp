@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Allegro++. If not, see <https://www.gnu.org/licenses/>.
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#include "font.hpp"
+#include <allegropp/font.hpp>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>

@@ -6,6 +6,7 @@ author: Eduardo Aguiar
 email: aguiar@protonmail.ch
 repository: https://github.com/eduardoaguiar-oss/allegropp
 website: https://github.com/eduardoaguiar-oss/allegropp
+version: 1.0
 ---
 
 # Allegro++
@@ -56,53 +57,38 @@ website: https://github.com/eduardoaguiar-oss/allegropp
    sudo cmake --install .
    ```
 
-### Usage
-
-Include the Allegro++ header in your project and link against the library. Here's a simple example:
-
-```cpp
-#include <allegropp/allegropp.hpp>
-
-int main() {
-    // Initialize Allegro++
-    allegropp::Core core;
-    if (!core.init()) {
-        return -1;
-    }
-
-    // Create a display
-    allegropp::display display (800, 600);
-    display.set_window_title ("Allegro++ Example");
-
-    // Load font
-    allegropp::font text_font ("arial.ttf");
-    allegropp::color text_color (255, 255, 0);
-    
-    // Main loop
-    while (true) {
-        // Clear the screen
-        display.clear (allegropp::Color::White);
-
-        // Draw something
-        font.draw_text (100, 100, "Hello, Allegro++!", text_color);
-
-        // Flip the display
-        display.flip ();
-    }
-
-    return 0;
-}
-```
-
 ---
 
-## Documentation
+## Usage
 
-For detailed documentation, check out the [Wiki](https://github.com/eduardoaguiar-oss/allegropp/wiki). It includes:
+`Allegro++` is a C++ wrapper for the Allegro Game Library, designed to simplify game development by providing a modern, object-oriented interface. To help you get started with `Allegro++`, the [hebrewcard](https://github.com/eduardoaguiar-oss/hebrewcard) project serves as a functional example of how to use the library in a real-world application.
 
-- **API Reference**: A complete guide to Allegro++ classes and methods.
-- **Tutorials**: Step-by-step guides to help you get started.
-- **Examples**: Sample projects demonstrating Allegro++ features.
+### HebrewCard: A Practical Example
+[HebrewCard](https://github.com/eduardoaguiar-oss/hebrewcard) is an interactive flashcard program designed to help users learn and memorize Hebrew letters. It demonstrates key features of `Allegro++`, including:
+
+- **Window and Rendering Management**: Creating and managing a window, rendering text, and handling display updates.
+- **Event Handling**: Processing user input, such as keyboard events, to navigate between flashcards.
+- **Resource Management**: Loading and using fonts and other assets.
+
+By exploring the `hebrewcard` source code, you can see how `Allegro++` is used to build a fully functional application. Here’s how you can get started:
+
+1. **Clone the `hebrewcard` repository**:
+
+   ```bash
+   git clone https://github.com/eduardoaguiar-oss/hebrewcard.git
+   cd hebrewcard
+   ```
+
+2. **Build and run `hebrewcard`**:
+   Follow the instructions in the `hebrewcard` repository to build and run the project. This will give you hands-on experience with `Allegro++` in action.
+
+3. **Study the code**:
+   Review the `hebrewcard` source code to understand how `Allegro++` is integrated into the project. Pay special attention to:
+   - How the `Allegro++` library is initialized and configured.
+   - How rendering and event handling are implemented.
+   - How resources like fonts are managed.
+
+For more details, visit the [Hebrewcard GitHub repository](https://github.com/eduardoaguiar-oss/hebrewcard).
 
 ---
 

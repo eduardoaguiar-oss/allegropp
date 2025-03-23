@@ -17,9 +17,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Allegro++. If not, see <https://www.gnu.org/licenses/>.
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#include "event_queue.hpp"
-#include "keyboard.hpp"
-#include "mouse.hpp"
+#include <allegropp/event_queue.hpp>
+#include <allegropp/keyboard.hpp>
+#include <allegropp/mouse.hpp>
 
 namespace allegropp
 {

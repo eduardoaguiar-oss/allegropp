@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Allegro++. If not, see <https://www.gnu.org/licenses/>.
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#include "keyboard.hpp"
+#include <allegropp/keyboard.hpp>
 #include <allegro5/allegro.h>
 #include <mutex>
 
