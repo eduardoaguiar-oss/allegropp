@@ -36,6 +36,7 @@ add_library(allegropp SHARED)
 
 target_sources(allegropp
     PRIVATE
+        src/allegropp/allegropp.cpp
         src/allegropp/bitmap.cpp
         src/allegropp/color.cpp
         src/allegropp/display.cpp
@@ -45,6 +46,7 @@ target_sources(allegropp
         src/allegropp/keyboard.cpp
         src/allegropp/mouse.cpp
         src/allegropp/sample.cpp
+        src/allegropp/timer.cpp
 )
 
 target_include_directories(allegropp

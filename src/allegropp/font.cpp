@@ -17,6 +17,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Allegro++. If not, see <https://www.gnu.org/licenses/>.
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#include <allegropp/allegropp.hpp>
 #include <allegropp/font.hpp>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
@@ -25,7 +26,8 @@
 
 namespace
 {
-std::once_flag is_initialized_;
+static std::once_flag is_initialized_;
+static const std::string SYSTEM_DEFAULT_FONT_DIR = "/usr/share/fonts/truetype";
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //! \brief Initialize Allegro font subsystem
@@ -33,8 +35,9 @@ std::once_flag is_initialized_;
 static void
 _init ()
 {
-    al_init_font_addon ();
-    al_init_ttf_addon ();
+  allegropp::init ();       // Initialize Allegro main system
+  al_init_font_addon ();    // Initialize font subsystem
+  al_init_ttf_addon ();     // Initialize font TTF subsystem
 }
 
 } // namespace
@@ -93,8 +96,17 @@ private:
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 font::impl::impl (const std::string& path, std::size_t size)
 {
-    std::call_once (is_initialized_, _init);
-    obj_ = al_load_ttf_font(path.c_str (), size, 0);
+  std::call_once (is_initialized_, _init);
+  
+  // Try to load font using path
+  obj_ = al_load_font (path.c_str (), size, 0);
+  
+  // If it fails and path has no dirname, search for file in the SYSTEM_DEFAULT_FONT_DIR
+  if (!obj_ && path.find ('/') == std::string::npos)
+    {
+      const std::string new_path = SYSTEM_DEFAULT_FONT_DIR + '/' + path;
+      obj_ = al_load_font (new_path.c_str (), size, 0);      
+    }
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -102,8 +114,8 @@ font::impl::impl (const std::string& path, std::size_t size)
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 font::impl::~impl ()
 {
-    if (obj_)
-        al_destroy_font (obj_);
+  if (obj_)
+    al_destroy_font (obj_);
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -113,10 +125,10 @@ font::impl::~impl ()
 int
 font::impl::get_font_line_height () const
 {
-    if (!obj_)
-        throw std::invalid_argument ("null font object");
+  if (!obj_)
+    throw std::invalid_argument ("null font object");
     
-    return al_get_font_line_height (obj_);
+  return al_get_font_line_height (obj_);
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -126,10 +138,10 @@ font::impl::get_font_line_height () const
 int
 font::impl::get_font_ascent () const
 {
-    if (!obj_)
-        throw std::invalid_argument ("null font object");
+  if (!obj_)
+    throw std::invalid_argument ("null font object");
     
-    return al_get_font_ascent (obj_);
+  return al_get_font_ascent (obj_);
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -139,10 +151,10 @@ font::impl::get_font_ascent () const
 int
 font::impl::get_font_descent () const
 {
-    if (!obj_)
-        throw std::invalid_argument ("null font object");
+  if (!obj_)
+    throw std::invalid_argument ("null font object");
     
-    return al_get_font_descent (obj_);
+  return al_get_font_descent (obj_);
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -153,10 +165,10 @@ font::impl::get_font_descent () const
 int
 font::impl::get_text_width (const std::string& text) const
 {
-    if (!obj_)
-        throw std::invalid_argument ("null font object");
+  if (!obj_)
+    throw std::invalid_argument ("null font object");
     
-    return al_get_text_width (obj_, text.c_str ());
+  return al_get_text_width (obj_, text.c_str ());
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -210,7 +222,7 @@ font::operator bool () const noexcept
 int
 font::get_font_line_height () const
 {
-    return impl_->get_font_line_height ();
+  return impl_->get_font_line_height ();
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -220,7 +232,7 @@ font::get_font_line_height () const
 int
 font::get_font_ascent () const
 {
-    return impl_->get_font_ascent ();
+  return impl_->get_font_ascent ();
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -230,7 +242,7 @@ font::get_font_ascent () const
 int
 font::get_font_descent () const
 {
-    return impl_->get_font_descent ();
+  return impl_->get_font_descent ();
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -241,7 +253,7 @@ font::get_font_descent () const
 int
 font::get_text_width (const std::string& text) const
 {
-    return impl_->get_text_width (text.c_str ());
+  return impl_->get_text_width (text.c_str ());
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -254,7 +266,7 @@ font::get_text_width (const std::string& text) const
 void
 font::draw_text_left (int x, int y, const std::string& text, const color& c)
 {
-    impl_->draw_text (text, c, x, y, ALLEGRO_ALIGN_LEFT);
+  impl_->draw_text (text, c, x, y, ALLEGRO_ALIGN_LEFT);
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -267,7 +279,7 @@ font::draw_text_left (int x, int y, const std::string& text, const color& c)
 void
 font::draw_text_center (int x, int y, const std::string& text, const color& c)
 {
-    impl_->draw_text (text, c, x, y, ALLEGRO_ALIGN_CENTER);
+  impl_->draw_text (text, c, x, y, ALLEGRO_ALIGN_CENTER);
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -280,7 +292,7 @@ font::draw_text_center (int x, int y, const std::string& text, const color& c)
 void
 font::draw_text_right (int x, int y, const std::string& text, const color& c)
 {
-    impl_->draw_text (text, c, x, y, ALLEGRO_ALIGN_RIGHT);
+  impl_->draw_text (text, c, x, y, ALLEGRO_ALIGN_RIGHT);
 }
 
 } // namespace allegropp

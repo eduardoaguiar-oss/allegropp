@@ -18,6 +18,7 @@
 // along with Allegro++. If not, see <https://www.gnu.org/licenses/>.
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #include <allegropp/bitmap.hpp>
+#include <allegropp/allegropp.hpp>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <mutex>
@@ -32,7 +33,8 @@ std::once_flag is_initialized_;
 static void
 _init ()
 {
-    al_init_image_addon ();
+  allegropp::init ();       // Initialize Allegro main system
+  al_init_image_addon ();   // Initialize image subsystem
 }
 
 } // namespace

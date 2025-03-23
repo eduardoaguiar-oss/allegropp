@@ -18,6 +18,7 @@
 // along with Allegro++. If not, see <https://www.gnu.org/licenses/>.
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #include <allegropp/display.hpp>
+#include <allegropp/allegropp.hpp>
 #include <allegro5/allegro.h>
 
 namespace allegropp
@@ -60,8 +61,8 @@ public:
   void flip ();
   void resize (std::size_t, std::size_t);
   void set_window_title (const std::string&);
-  std::pair <int, int> get_window_position () const;
   void set_window_position (std::size_t, std::size_t);
+  std::pair <int, int> get_window_position () const;
   event_source get_event_source () const;
 
 private:
@@ -76,7 +77,8 @@ private:
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 display::impl::impl (std::size_t width, std::size_t height)
 {
-    obj_ = al_create_display (width, height);
+  allegropp::init ();       // Initialize Allegro main system
+  obj_ = al_create_display (width, height);
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
