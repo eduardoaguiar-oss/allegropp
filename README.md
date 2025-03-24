@@ -6,7 +6,7 @@ author: Eduardo Aguiar
 email: aguiar@protonmail.ch
 repository: https://github.com/eduardoaguiar-oss/allegropp
 website: https://github.com/eduardoaguiar-oss/allegropp
-version: 1.0
+version: 1.1
 ---
 
 # Allegro++
@@ -61,10 +61,10 @@ version: 1.0
 
 ## Usage
 
-`Allegro++` is a C++ wrapper for the Allegro Game Library, designed to simplify game development by providing a modern, object-oriented interface. To help you get started with `Allegro++`, the [hebrewcard](https://github.com/eduardoaguiar-oss/hebrewcard) project serves as a functional example of how to use the library in a real-world application.
+`Allegro++` is a C++ wrapper for the Allegro Game Library, designed to simplify game development by providing a modern, object-oriented interface. The "examples" directory contains simple demonstration programs designed to illustrate how to use Allegro++.
 
 ### HebrewCard: A Practical Example
-[HebrewCard](https://github.com/eduardoaguiar-oss/hebrewcard) is an interactive flashcard program designed to help users learn and memorize Hebrew letters. It demonstrates key features of `Allegro++`, including:
+To help you get started with `Allegro++`, the [hebrewcard](https://github.com/eduardoaguiar-oss/hebrewcard) project serves as a functional example of how to use the library in a real-world application. Hebrewcard is an interactive flashcard program designed to help users learn and memorize Hebrew letters. It demonstrates key features of `Allegro++`, including:
 
 - **Window and Rendering Management**: Creating and managing a window, rendering text, and handling display updates.
 - **Event Handling**: Processing user input, such as keyboard events, to navigate between flashcards.

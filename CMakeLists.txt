@@ -20,7 +20,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project(AllegroPP
-   VERSION 1.0.0
+   VERSION 1.1
    DESCRIPTION "A modern C++ wrapper for the Allegro Game Library"
    LANGUAGES CXX
 )
@@ -36,17 +36,18 @@ add_library(allegropp SHARED)
 
 target_sources(allegropp
     PRIVATE
-        src/allegropp/allegropp.cpp
-        src/allegropp/bitmap.cpp
-        src/allegropp/color.cpp
-        src/allegropp/display.cpp
-        src/allegropp/event_queue.cpp
-        src/allegropp/event_source.cpp
-        src/allegropp/font.cpp
-        src/allegropp/keyboard.cpp
-        src/allegropp/mouse.cpp
-        src/allegropp/sample.cpp
-        src/allegropp/timer.cpp
+        src/allegropp.cpp
+        src/bitmap.cpp
+        src/color.cpp
+        src/display.cpp
+        src/event_queue.cpp
+        src/event_source.cpp
+        src/font.cpp
+        src/keyboard.cpp
+        src/maze.cpp
+        src/mouse.cpp
+        src/sample.cpp
+        src/timer.cpp
 )
 
 target_include_directories(allegropp

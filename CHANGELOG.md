@@ -9,11 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 - Added this CHANGELOG.md file.
-- Added a new function allegropp::init.
-- Added a new directory named examples, containing usage examples for Allegro++.
-- Added a new example program, called "hello_world".
+- New function allegropp::init.
+- New class "maze".
+- Created a new directory named examples, containing usage examples for Allegro++.
+- New example program, called "hello_world".
+- New example program, called "maze".
 
 ### Changed
+- .cpp files moved from src/allegropp to src directory.
 - bitmap::_init calls allegropp::init.
 - display::impl::impl calls allegropp::init.
 - font::_init calls allegropp::init.
